@@ -35,22 +35,36 @@ class handler(BaseHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": "CSV content is empty."}).encode("utf-8"))
                 return
 
-            data = pd.read_csv(StringIO(csv_text))  # Load CSV from text
+            def normalize_column(name):
+                return str(name).strip().lstrip("\ufeff").lower()
+
+            data = pd.read_csv(StringIO(csv_text), skipinitialspace=True)  # Load CSV from text
+            data.columns = [normalize_column(col) for col in data.columns]  # Normalize headers
 
             required_columns = {"date", "sales", "profit"}
             if not required_columns.issubset(set(data.columns)):
-                self.send_response(400)
-                self.send_header("Content-Type", "application/json")
-                self.end_headers()
-                self.wfile.write(
-                    json.dumps(
-                        {
-                            "error": "CSV must contain columns: date, sales, profit.",
-                            "example": "date,sales,profit\n2025-01-01,1200,300",
-                        }
-                    ).encode("utf-8")
-                )
-                return
+                # Try reading again without header (user may have omitted it)
+                data = pd.read_csv(StringIO(csv_text), header=None, skipinitialspace=True)
+
+                if data.shape[1] == 3:
+                    # If first row looks like a header, drop it
+                    first_row = [normalize_column(value) for value in data.iloc[0].tolist()]
+                    if first_row == ["date", "sales", "profit"]:
+                        data = data.iloc[1:].reset_index(drop=True)
+                    data.columns = ["date", "sales", "profit"]
+                else:
+                    self.send_response(400)
+                    self.send_header("Content-Type", "application/json")
+                    self.end_headers()
+                    self.wfile.write(
+                        json.dumps(
+                            {
+                                "error": "CSV must contain columns: date, sales, profit.",
+                                "example": "date,sales,profit\n2025-01-01,1200,300",
+                            }
+                        ).encode("utf-8")
+                    )
+                    return
 
             cleaned = data.dropna()  # Remove rows with missing values
             report = cleaned.describe()  # Create summary statistics

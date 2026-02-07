@@ -85,10 +85,10 @@ date,sales,profit
 
 **Rules:**
 - Columns must be exactly: `date`, `sales`, `profit`
+- Header row is recommended; if missing, the system assumes 3 columns in this order
 - `date` should be in `YYYY-MM-DD`
 - `sales` and `profit` should be numeric
 - Missing values are allowed (they will be removed during cleaning)
 
 **Endpoint used:**
 `/api/report_upload`
-
