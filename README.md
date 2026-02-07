@@ -57,6 +57,9 @@ This repo includes a simple API endpoint at `api/report.py`. Vercel deploys file
 2. In the Vercel dashboard, create a New Project and import the GitHub repo.
 3. Keep the default settings and deploy.
 
+### Homepage
+After deployment, the root URL shows a simple landing page with a link to the report endpoint.
+
 ### Test The Live Endpoint
 Open the URL below in a browser after deployment:
 ```
