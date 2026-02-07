@@ -48,3 +48,23 @@ The report contains summary statistics like count, mean, min, and max for the nu
 - Data handling: reading CSV, cleaning missing values, and generating summaries
 - Automation: running a repeatable process with clear steps
 - Error handling: try-except blocks for safe execution
+
+## Live on Vercel (Optional)
+This repo includes a simple API endpoint at `api/report.py`. Vercel deploys files inside `api/` as serverless functions, so your report becomes available at `/api/report` after deployment.
+
+### Steps (GitHub Import)
+1. Push this repository to GitHub (already done).
+2. In the Vercel dashboard, create a New Project and import the GitHub repo.
+3. Keep the default settings and deploy.
+
+### Test The Live Endpoint
+Open the URL below in a browser after deployment:
+```
+https://<your-project>.vercel.app/api/report
+```
+You should see the summary report as CSV.
+
+### Notes About Serverless Behavior
+- The function reads `data/sales_data.csv` at request time and generates the report on the fly.
+- Vercel functions use a read-only file system at runtime, so the report is returned as a response instead of being written to the repo.
+- The `vercel.json` file explicitly includes `data/sales_data.csv` in the function bundle.

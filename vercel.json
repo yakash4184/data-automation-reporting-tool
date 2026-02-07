@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/report.py": {
+      "includeFiles": "data/sales_data.csv"
+    }
+  }
+}
