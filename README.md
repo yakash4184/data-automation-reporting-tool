@@ -71,3 +71,24 @@ You should see the summary report as CSV.
 - The function reads `data/sales_data.csv` at request time and generates the report on the fly.
 - Vercel functions use a read-only file system at runtime, so the report is returned as a response instead of being written to the repo.
 - The `vercel.json` file explicitly includes `data/sales_data.csv` in the function bundle.
+
+
+## Upload Your Own CSV (Live Demo)
+The homepage allows users to upload their own CSV file or paste CSV text. The server generates a summary report and returns it as CSV.
+
+**Required CSV format:**
+```
+date,sales,profit
+2025-01-01,1200,300
+2025-01-02,1500,420
+```
+
+**Rules:**
+- Columns must be exactly: `date`, `sales`, `profit`
+- `date` should be in `YYYY-MM-DD`
+- `sales` and `profit` should be numeric
+- Missing values are allowed (they will be removed during cleaning)
+
+**Endpoint used:**
+`/api/report_upload`
+
